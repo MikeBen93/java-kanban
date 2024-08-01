@@ -6,7 +6,6 @@ public class Epic extends Task{
     public Epic(String name, String description) {
         super(name, description);
         this.subtasks = new ArrayList<>();
-        this.type = TasksTypes.EPIC;
     }
 
     public ArrayList<Subtask> getSubtasks() {
@@ -20,6 +19,10 @@ public class Epic extends Task{
 
     protected void removeSubtask(Subtask subtask) {
         this.subtasks.remove(subtask);
+    }
+
+    protected void removeAllSubtasks() {
+        this.subtasks.clear();
     }
 
     public ArrayList<Integer> getSubtasksId() {
