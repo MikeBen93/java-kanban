@@ -1,4 +1,7 @@
+package tasks;
+
 import java.util.Objects;
+import managers.*;
 
 public class Task {
     protected String name;
@@ -7,19 +10,47 @@ public class Task {
     protected TaskStatuses status;
 
     // конструктор для первичного создания
-    public Task(String name, String description) {
+    public Task(String name, String description, TaskStatuses status) {
         this.name = name;
         this.description = description;
-        this.id = TaskManager.getNewGlobalId();
-        this.status = TaskStatuses.NEW;
+        this.id = InMemoryTaskManager.getNewGlobalId();
+        this.status = status;
     }
 
     // конструктор для обновления, через создание нового объекта
-    public Task(Task task, TaskStatuses status) {
-        this.name = task.name;
-        this.description = task.description;
-        this.id = task.id;
+    public Task(String name, String description, TaskStatuses status, int id) {
+        this.name = name;
+        this.description = description;
+        this.id = id;
         this.status = status;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public TaskStatuses getStatus() {
+        return status;
+    }
+
+    public void setStatus(TaskStatuses status) {
+        this.status = status;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -43,9 +74,4 @@ public class Task {
                 + ", description: " + description
                 + ", status: " + status.name() + "}";
     }
-
-    public int getId() {
-        return id;
-    }
-
 }
