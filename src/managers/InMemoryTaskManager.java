@@ -112,7 +112,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void createSubtask(Subtask subtask, int epicId) {
         Epic epic = epics.get(epicId);
         int subtaskId = subtask.getId();
-        if (epicId == subtaskId ) {
+        if (epicId == subtaskId) {
             return;
         }
 
