@@ -13,7 +13,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node<Task> head;
     private Node<Task> tail;
 
-    InMemoryHistoryManager() {
+    public InMemoryHistoryManager() {
         mapOfTasks = new HashMap<Integer, Node<Task>>();
     }
 
@@ -35,7 +35,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         removeNode(mapOfTasks.get(id));
     }
 
-    void linkLast(Task newTask) {
+    private void linkLast(Task newTask) {
         final Node<Task> oldTail = tail;
         final Node<Task> newNode = new Node<Task>(oldTail, newTask, null);
         tail = newNode;
