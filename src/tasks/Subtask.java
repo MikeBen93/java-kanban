@@ -29,6 +29,6 @@ public class Subtask extends Task {
                 + ", name: " + name
                 + ", description: " + description
                 + ", status: " + status.name()
-                + ", epicId: " + epicId;
+                + ", epicId: " + epicId + "}";
     }
 }
