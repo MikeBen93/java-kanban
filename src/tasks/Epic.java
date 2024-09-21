@@ -10,9 +10,8 @@ public class Epic extends Task {
         this.subtasksId = new ArrayList<>();
         this.taskType = TaskTypes.EPIC;
     }
-    
-    //конструктор для загрузки из файла
-    public Epic(String name, String description, TaskStatuses status, int id) {
+
+    public Epic(String name, String description, TaskStatuses status, int id) {//конструктор для загрузки из файла
         super(name, description, status);
         this.subtasksId = new ArrayList<>();
         this.taskType = TaskTypes.EPIC;
