@@ -7,8 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.io.File;
 import java.io.FileWriter;
 
@@ -68,8 +66,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
                 Task task = taskManager.fromString(line);
 
-                if (task instanceof Epic epic){
-                    taskManager.addEpic(epic) ;
+                if (task instanceof Epic epic) {
+                    taskManager.addEpic(epic);
                 } else if (task instanceof Subtask subtask) {
                     taskManager.addSubtask(subtask);
                 } else {
