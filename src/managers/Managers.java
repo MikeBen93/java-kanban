@@ -1,5 +1,7 @@
 package managers;
 
+import java.io.File;
+
 public class Managers {
 
     public static TaskManager getDefault(HistoryManager historyManager) {

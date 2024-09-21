@@ -1,25 +1,36 @@
 import managers.*;
 import tasks.*;
 
+import java.io.File;
+import java.io.IOException;
+
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ManagerSaveException {
         HistoryManager historyManager = Managers.getDefaultHistory();
         TaskManager taskManager = Managers.getDefault(historyManager);
 
+/*
         addTasks(taskManager);
         printAllTasks(taskManager);
         printTasksById(taskManager);
         updateTasks(taskManager);
         printAllTasks(taskManager);
         printTasksByIdSecond(taskManager);
-        /*
+
         removeTasks(taskManager);
         printAllTasks(taskManager);
         removeAllTasks(taskManager);
         printAllTasks(taskManager);
         */
+        File file = new File("tasksFile.csv");
+        TaskManager fileBackedTaskManager = new FileBackedTaskManager(historyManager,file);
+        addTasks(fileBackedTaskManager);
+        TaskManager fileBackedTaskManager2 = FileBackedTaskManager.loadFromFile(historyManager,file);
+        printAllTasks(fileBackedTaskManager2);
     }
+
+
 
     private static void printAllTasks(TaskManager manager) {
         System.out.println("Все задачи:");

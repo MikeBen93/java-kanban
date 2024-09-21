@@ -8,6 +8,7 @@ public class Task {
     protected String description;
     protected int id;
     protected TaskStatuses status;
+    protected TaskTypes taskType;
 
     // конструктор для первичного создания
     public Task(String name, String description, TaskStatuses status) {
@@ -15,6 +16,7 @@ public class Task {
         this.description = description;
         this.id = InMemoryTaskManager.getNewGlobalId();
         this.status = status;
+        this.taskType = TaskTypes.TASK;
     }
 
     // конструктор для обновления, через создание нового объекта
@@ -31,6 +33,10 @@ public class Task {
 
     public String getDescription() {
         return description;
+    }
+
+    public TaskTypes getType() {
+        return taskType;
     }
 
     public void setDescription(String description) {
