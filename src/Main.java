@@ -6,28 +6,14 @@ import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, ManagerSaveException {
-        HistoryManager historyManager = Managers.getDefaultHistory();
-        TaskManager taskManager = Managers.getDefault(historyManager);
-
-/*
-        addTasks(taskManager);
-        printAllTasks(taskManager);
-        printTasksById(taskManager);
-        updateTasks(taskManager);
-        printAllTasks(taskManager);
-        printTasksByIdSecond(taskManager);
-
-        removeTasks(taskManager);
-        printAllTasks(taskManager);
-        removeAllTasks(taskManager);
-        printAllTasks(taskManager);
-        */
+    public static void main(String[] args) throws ManagerSaveException {
         File file = new File("tasksFile.csv");
-        TaskManager fileBackedTaskManager = new FileBackedTaskManager(historyManager,file);
+        TaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
+
         addTasks(fileBackedTaskManager);
-        TaskManager fileBackedTaskManager2 = FileBackedTaskManager.loadFromFile(historyManager,file);
-        printAllTasks(fileBackedTaskManager2);
+        printAllTasks(fileBackedTaskManager);
+        TaskManager fileBackedTaskManagerFromFile = FileBackedTaskManager.loadFromFile(file);
+        printAllTasks(fileBackedTaskManagerFromFile);
     }
 
 

@@ -11,13 +11,11 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {
-    HistoryManager historyManager;
     TaskManager taskManager;
 
     @BeforeEach
     void beforeEach() {
-        historyManager = Managers.getDefaultHistory();
-        taskManager = Managers.getDefault(historyManager);
+        taskManager = Managers.getDefault();
     }
 
     @Test

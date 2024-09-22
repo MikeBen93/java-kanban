@@ -11,13 +11,11 @@ import java.io.File;
 import java.io.FileWriter;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
-
-    File tasksFile;
     private static final String HEADER_CSV_FILE = "id,type,name,status,description,startTime,duration,epicId";
+    File tasksFile;
 
-
-    public FileBackedTaskManager(HistoryManager historyManager, File tasksFile) {
-        super(historyManager);
+    public FileBackedTaskManager(File tasksFile) {
+        super();
         this.tasksFile = tasksFile;
     }
 
@@ -51,8 +49,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         }
     }
 
-    public static FileBackedTaskManager loadFromFile(HistoryManager historyManager, File existingTasksFile) {
-        FileBackedTaskManager taskManager = new FileBackedTaskManager(historyManager, existingTasksFile);
+    public static FileBackedTaskManager loadFromFile(File existingTasksFile) {
+        FileBackedTaskManager taskManager = new FileBackedTaskManager(existingTasksFile);
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(existingTasksFile, StandardCharsets.UTF_8))) {
 
             String line;// = bufferedReader.readLine();

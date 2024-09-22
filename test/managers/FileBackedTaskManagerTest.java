@@ -16,16 +16,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class FileBackedTaskManagerTest {
-    HistoryManager historyManager;
     TaskManager taskManager;
     TaskManager taskManager2;
     File testFile;
 
     @BeforeEach
     void beforeEach() throws IOException {
-        historyManager = Managers.getDefaultHistory();
         testFile = File.createTempFile("testFile", "csv");
-        taskManager = new FileBackedTaskManager(historyManager,testFile);
+        taskManager = new FileBackedTaskManager(testFile);
     }
 
     @Test
@@ -65,7 +63,7 @@ public class FileBackedTaskManagerTest {
                 new Subtask(testSubtaskName, "SUBTASK_1_OF_EPIC_1", TaskStatuses.NEW),
                 1);
 
-        taskManager2 = FileBackedTaskManager.loadFromFile(historyManager, testFile);
+        taskManager2 = FileBackedTaskManager.loadFromFile(testFile);
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(testFile, StandardCharsets.UTF_8))) {
             while (bufferedReader.ready()) {

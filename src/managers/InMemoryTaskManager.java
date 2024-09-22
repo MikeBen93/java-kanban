@@ -13,12 +13,12 @@ public class InMemoryTaskManager implements TaskManager {
     private static int taskGlobalId;
     private HistoryManager historyManager;
 
-    public InMemoryTaskManager(HistoryManager historyManager) {
+    public InMemoryTaskManager() {
         taskGlobalId = 0;
         tasks = new HashMap<>();
         epics = new HashMap<>();
         subtasks = new HashMap<>();
-        this.historyManager = historyManager;
+        this.historyManager = Managers.getDefaultHistory();
     }
 
     // метод для работы с индентификатором задач

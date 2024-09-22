@@ -14,8 +14,7 @@ class SubtaskTest {
 
     @BeforeEach
     void beforeEach() {
-        historyManager = Managers.getDefaultHistory();
-        taskManager = Managers.getDefault(historyManager);
+        taskManager = Managers.getDefault();
     }
 
     @Test
