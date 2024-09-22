@@ -19,41 +19,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         this.tasksFile = tasksFile;
     }
 
-    private void save() {
-        try {
-            if (Files.exists(tasksFile.toPath())) {
-                Files.delete(tasksFile.toPath());
-            }
-            Files.createFile(tasksFile.toPath());
-        } catch (IOException e) {
-            throw new ManagerSaveException("Не удалось найти файл для записи данных");
-        }
-
-        try (FileWriter fileWriter = new FileWriter(tasksFile, StandardCharsets.UTF_8)) {
-            fileWriter.write(HEADER_CSV_FILE + "\n");
-
-            for (Task t : super.getTasks()) {
-                fileWriter.write(toStringForFile(t) + "\n");
-            }
-            for (Epic e : super.getEpics()) {
-                fileWriter.write(toStringForFile(e) + "\n");
-            }
-            for (Subtask s : super.getSubtasks()) {
-                fileWriter.write(toStringForFile(s) + "\n");
-            }
-
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new ManagerSaveException("Не удалось записать в файл задачи");
-        }
-    }
-
     public static FileBackedTaskManager loadFromFile(File existingTasksFile) {
         FileBackedTaskManager taskManager = new FileBackedTaskManager(existingTasksFile);
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(existingTasksFile, StandardCharsets.UTF_8))) {
 
-            String line;// = bufferedReader.readLine();
+            String line;
             while (bufferedReader.ready()) {
                 line = bufferedReader.readLine();
                 if (line.equals("")) {
@@ -143,6 +113,36 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     public void removeSubtask(int id) {
         super.removeSubtask(id);
         save();
+    }
+
+    private void save() {
+        try {
+            if (Files.exists(tasksFile.toPath())) {
+                Files.delete(tasksFile.toPath());
+            }
+            Files.createFile(tasksFile.toPath());
+        } catch (IOException e) {
+            throw new ManagerSaveException("Не удалось найти файл для записи данных");
+        }
+
+        try (FileWriter fileWriter = new FileWriter(tasksFile, StandardCharsets.UTF_8)) {
+            fileWriter.write(HEADER_CSV_FILE + "\n");
+
+            for (Task t : super.getTasks()) {
+                fileWriter.write(toStringForFile(t) + "\n");
+            }
+            for (Epic e : super.getEpics()) {
+                fileWriter.write(toStringForFile(e) + "\n");
+            }
+            for (Subtask s : super.getSubtasks()) {
+                fileWriter.write(toStringForFile(s) + "\n");
+            }
+
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ManagerSaveException("Не удалось записать в файл задачи");
+        }
     }
 
     private String toStringForFile(Task task) {
