@@ -16,8 +16,7 @@ class ManagersTest {
 
     @Test
     void createTaskManager() {
-        HistoryManager historyManager = Managers.getDefaultHistory();
-        TaskManager taskManager = Managers.getDefault(historyManager);
+        TaskManager taskManager = Managers.getDefault();
 
         Assertions.assertNotNull(taskManager);
     }
