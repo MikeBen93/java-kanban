@@ -9,6 +9,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.File;
 import java.io.FileWriter;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
     private static final String HEADER_CSV_FILE = "id,type,name,status,description,startTime,duration,epicId";
@@ -152,17 +154,24 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             epicId = Integer.toString(subtask.getEpicId());
         }
 
-        return String.format("%s,%s,%s,%s,%s,%s",
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s",
                 task.getId(),
                 task.getType(),
                 task.getName(),
                 task.getStatus(),
                 task.getDescription(),
+                task.getStartTime(),
+                task.getDuration().toMinutes(),
                 epicId);
     }
 
     private Task fromString(String value) {
         String[] taskValues = value.split(",");
+        LocalDateTime taskDT;
+        if (taskValues[5].equals("null"))
+            taskDT = null;
+        else
+            taskDT = LocalDateTime.parse(taskValues[5]);
 
         switch (TaskTypes.valueOf(taskValues[1])) {
             case TASK:
@@ -170,23 +179,29 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                         taskValues[2],
                         taskValues[4],
                         TaskStatuses.valueOf(taskValues[3]),
-                        Integer.parseInt(taskValues[0])
+                        Integer.parseInt(taskValues[0]),
+                        taskDT,
+                        Integer.parseInt(taskValues[6])
                 );
             case EPIC:
                 return new Epic(
                         taskValues[2],
                         taskValues[4],
                         TaskStatuses.valueOf(taskValues[3]),
-                        Integer.parseInt(taskValues[0])
+                        Integer.parseInt(taskValues[0]),
+                        taskDT,
+                        Integer.parseInt(taskValues[6])
                 );
             case SUBTASK:
                 Subtask subtask = new Subtask(
                         taskValues[2],
                         taskValues[4],
                         TaskStatuses.valueOf(taskValues[3]),
-                        Integer.parseInt(taskValues[0])
+                        Integer.parseInt(taskValues[0]),
+                        taskDT,
+                        Integer.parseInt(taskValues[6])
                 );
-                subtask.setEpicId(Integer.parseInt(taskValues[5]));
+                subtask.setEpicId(Integer.parseInt(taskValues[7]));
                 return subtask;
         }
         return null;

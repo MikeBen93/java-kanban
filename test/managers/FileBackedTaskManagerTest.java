@@ -13,7 +13,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FileBackedTaskManagerTest {
     TaskManager taskManager;
@@ -76,5 +79,14 @@ public class FileBackedTaskManagerTest {
         Assertions.assertEquals(taskManager2.getTasks().get(0), taskManager.getTasks().get(0));
         Assertions.assertEquals(taskManager2.getEpics().get(0), taskManager.getEpics().get(0));
         Assertions.assertEquals(taskManager2.getSubtasks().get(0), taskManager.getSubtasks().get(0));
+    }
+
+    @Test
+    void checkReadException() throws IOException {
+        Files.delete(testFile.toPath());
+
+        assertThrows(ManagerSaveException.class, () -> {
+            FileBackedTaskManager.loadFromFile(testFile);
+        });
     }
 }

@@ -2,9 +2,10 @@ package managers;
 
 import tasks.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Task> tasks;
@@ -12,6 +13,15 @@ public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Subtask> subtasks;
     private static int taskGlobalId;
     private HistoryManager historyManager;
+    private final Comparator<Task> taskComparator = (t1, t2) -> {
+        if (t1.getId() == t2.getId()) {
+            if (t1.getStartTime() == null || t2.getStartTime() == null)
+                return 0;
+        }
+
+        return t1.getId() - t2.getId();
+    };
+    protected Set<Task> prioritizedTasks = new TreeSet<Task>(taskComparator);
 
     public InMemoryTaskManager() {
         taskGlobalId = 0;
@@ -32,11 +42,13 @@ public class InMemoryTaskManager implements TaskManager {
     // методы для работы с задачами типа tasks.Task
     @Override
     public void createTask(Task task) {
+        addNewPrioritizedTask(task);
         tasks.put(task.getId(), task);
     }
 
     @Override
     public void updateTask(Task task) {
+        addNewPrioritizedTask(task);
         tasks.put(task.getId(), task);
     }
 
@@ -47,6 +59,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeAllTasks() {
+        getPrioritizedTasks().stream()
+                .filter(task -> task.getType().equals(TaskTypes.TASK))
+                .map(task -> prioritizedTasks.remove(task));
         tasks.clear();
     }
 
@@ -58,6 +73,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeTask(int id) {
+        prioritizedTasks.removeIf(task -> task.getId() == id);
         tasks.remove(id);
     }
 
@@ -110,6 +126,7 @@ public class InMemoryTaskManager implements TaskManager {
     // методы для работы с задачами типа tasks.Subtask
     @Override
     public void createSubtask(Subtask subtask, int epicId) {
+        addNewPrioritizedTask(subtask);
         Epic epic = epics.get(epicId);
         int subtaskId = subtask.getId();
         if (epicId == subtaskId) {
@@ -124,8 +141,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(Subtask subtask) {
         subtask.setEpicId(subtasks.get(subtask.getId()).getEpicId());
+        addNewPrioritizedTask(subtask);
         subtasks.put(subtask.getId(), subtask);
         checkEpicForStatus(epics.get(subtask.getEpicId()));
+        checkEpicTime(epics.get(subtask.getEpicId()));
     }
 
     // метод для вывода задач типа tasks.Subtask
@@ -157,6 +176,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         subtaskEpic.removeSubtask(id);
         checkEpicForStatus(subtaskEpic);
+        checkEpicTime(subtaskEpic);
         subtasks.remove(id);
     }
 
@@ -189,8 +209,67 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(TaskStatuses.IN_PROGRESS);
     }
 
+    public void checkEpicTime(Epic epic) {
+        Duration duraionsSum = Duration.ZERO;
+        List<Integer> epicSubtasks = epic.getSubtasksId();
+        LocalDateTime earliestStartTime = subtasks.get(epicSubtasks.getFirst()).getStartTime();
+
+        for (Integer id : epicSubtasks) {
+            LocalDateTime startTime = subtasks.get(id).getStartTime();
+
+            if (startTime != null && earliestStartTime != null && startTime.isBefore(earliestStartTime))
+                earliestStartTime = startTime;
+
+            duraionsSum = duraionsSum.plus(subtasks.get(id).getDuration());
+        }
+
+        epic.setStartTime(earliestStartTime);
+        epic.setDuration(duraionsSum);
+        epic.setEndTime(earliestStartTime.plus(duraionsSum));
+    }
+
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
+    }
+
+    public Task hasIntersectionWith(Task task) {
+        List<Task> tasks = List.copyOf(prioritizedTasks);
+
+        for (Task checkTask : tasks) {
+            if (task.equals(checkTask))
+                continue;
+            else if ((task.getStartTime() == null && task.getEndTime() == null) ||
+            (checkTask.getStartTime() == null && checkTask.getEndTime() == null))
+                continue;
+            else if ((task.getStartTime().isAfter(checkTask.getStartTime())
+                    && task.getStartTime().isBefore(checkTask.getEndTime()))
+                || (task.getEndTime().isAfter(checkTask.getStartTime())
+                    && task.getEndTime().isBefore(checkTask.getEndTime()))
+                    || (task.getStartTime().isEqual(checkTask.getStartTime())
+                    && task.getEndTime().isEqual(checkTask.getEndTime()))
+            ) {
+                return checkTask;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        return prioritizedTasks.stream().toList();
+    }
+
+    private void addNewPrioritizedTask(Task task) {
+        Task crossedTask = hasIntersectionWith(task);
+
+        if (crossedTask != null)
+            throw new ManagerValidateException(
+                    "Задачи #" + task + " и #" + crossedTask + "пересекаются");
+        if (prioritizedTasks.contains(task))
+            prioritizedTasks.remove(task);
+
+        prioritizedTasks.add(task);
     }
 }
