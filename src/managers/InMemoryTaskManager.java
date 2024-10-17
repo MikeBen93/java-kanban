@@ -5,7 +5,6 @@ import tasks.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Task> tasks;
