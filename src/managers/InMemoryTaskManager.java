@@ -12,14 +12,7 @@ public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Subtask> subtasks;
     private static int taskGlobalId;
     private HistoryManager historyManager;
-    private final Comparator<Task> taskComparator = (t1, t2) -> {
-        if (t1.getId() == t2.getId()) {
-            if (t1.getStartTime() == null || t2.getStartTime() == null)
-                return 0;
-        }
-
-        return t1.getId() - t2.getId();
-    };
+    private final Comparator<Task> taskComparator = this::compare;
     protected Set<Task> prioritizedTasks = new TreeSet<Task>(taskComparator);
 
     public InMemoryTaskManager() {
@@ -208,7 +201,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(TaskStatuses.IN_PROGRESS);
     }
 
-    public void checkEpicTime(Epic epic) {
+    private void checkEpicTime(Epic epic) {
         Duration duraionsSum = Duration.ZERO;
         List<Integer> epicSubtasks = epic.getSubtasksId();
         LocalDateTime earliestStartTime = subtasks.get(epicSubtasks.getFirst()).getStartTime();
@@ -232,7 +225,7 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
-    public Task hasIntersectionWith(Task task) {
+    private Task hasIntersectionWith(Task task) {
         List<Task> tasks = List.copyOf(prioritizedTasks);
 
         for (Task checkTask : tasks) {
@@ -270,5 +263,14 @@ public class InMemoryTaskManager implements TaskManager {
             prioritizedTasks.remove(task);
 
         prioritizedTasks.add(task);
+    }
+
+    private int compare(Task firstTask, Task secondTask) {
+        if (firstTask.getId() == secondTask.getId()) {
+            if (firstTask.getStartTime() == null || secondTask.getStartTime() == null)
+                return 0;
+        }
+
+        return firstTask.getId() - secondTask.getId();
     }
 }

@@ -121,17 +121,4 @@ public class Task /*implements Comparable<Task>*/ {
                 + ", duration: " + duration.toMinutes()
                 + ", status: " + status.name() + "}";
     }
-
-    /*
-    @Override
-    public int compareTo(Task o) {
-        if (this.getId() == o.getId()) {
-            if (this.getStartTime() == null || o.getStartTime() == null)
-                return 0;
-        }
-
-        return this.getId() - o.getId();
-    }
-    */
-
 }

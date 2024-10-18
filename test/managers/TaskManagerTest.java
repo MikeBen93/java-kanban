@@ -131,7 +131,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testExceptionForDatesIntersection() {
+    void testManagerValidateException() {
         Task task1 = createTask();
         Task task2 = createTask();
         taskManager.createTask(task1);
