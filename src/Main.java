@@ -2,6 +2,7 @@ import managers.*;
 import tasks.*;
 
 import java.io.File;
+import java.time.LocalDateTime;
 
 public class Main {
 
@@ -10,6 +11,7 @@ public class Main {
         TaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
 
         addTasks(fileBackedTaskManager);
+        updateTasks(fileBackedTaskManager);
         printAllTasks(fileBackedTaskManager);
         TaskManager fileBackedTaskManagerFromFile = FileBackedTaskManager.loadFromFile(file);
         printAllTasks(fileBackedTaskManagerFromFile);
@@ -68,22 +70,34 @@ public class Main {
     }
 
     private static void updateTasks(TaskManager manager) {
-        manager.updateTask(new Task("test_1", "TEST_1", TaskStatuses.IN_PROGRESS, 1));
+        manager.updateTask(new Task(
+                "test_1",
+                "TEST_1",
+                TaskStatuses.IN_PROGRESS,
+                0,
+                LocalDateTime.of(2024, 10, 4, 12, 0),
+                60));
         manager.updateSubtask(new Subtask(
                 "subtask_1_1",
                 "SUBTASK_1_OF_EPIC_1",
                 TaskStatuses.IN_PROGRESS,
-                4));
+                4,
+                LocalDateTime.of(2024, 10, 4, 13, 0),
+                60));
         manager.updateSubtask(new Subtask(
                 "subtask_2_1",
                 "SUBTASK_1_OF_EPIC_2",
                 TaskStatuses.DONE,
-                6));
+                6,
+                LocalDateTime.of(2024, 10, 4, 14, 0),
+                60));
         manager.updateSubtask(new Subtask(
                 "subtask_2_2",
                 "SUBTASK_2_OF_EPIC_2",
                 TaskStatuses.DONE,
-                7));
+                7,
+                LocalDateTime.of(2024, 10, 4, 15, 0),
+                60));
     }
 
     private static void removeTasks(TaskManager manager) {
