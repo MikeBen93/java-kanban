@@ -31,7 +31,7 @@ public class BaseHttpHandler {
     protected Endpoint getEndpoint(String requestPath, String requestMethod) {
         String[] pathParts = requestPath.split("/");
 
-        switch(pathParts[1]) {
+        switch (pathParts[1]) {
             case "tasks":
                 switch (requestMethod) {
                     case "GET":
