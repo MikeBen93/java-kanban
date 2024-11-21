@@ -17,7 +17,7 @@ public class PrioritizedHttpHandler extends BaseHttpHandler implements HttpHandl
     public void handle(HttpExchange exchange) throws IOException {
         Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
 
-        if(endpoint.equals(Endpoint.GET_PRIORITIZED)) {
+        if (endpoint.equals(Endpoint.GET_PRIORITIZED)) {
             handleGetPrioritized(exchange);
         } else {
             sendNotFound(exchange);
