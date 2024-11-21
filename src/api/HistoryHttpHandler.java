@@ -17,7 +17,7 @@ public class HistoryHttpHandler extends BaseHttpHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
 
-        if(endpoint.equals(Endpoint.GET_HISTORY)) {
+        if (endpoint.equals(Endpoint.GET_HISTORY)) {
             handleGetHistory(exchange);
         } else {
             sendNotFound(exchange);
