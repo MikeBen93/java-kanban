@@ -14,8 +14,6 @@ public class Main {
         addTasks(fileBackedTaskManager);
         updateTasks(fileBackedTaskManager);
         printAllTasks(fileBackedTaskManager);
-        //TaskManager fileBackedTaskManagerFromFile = FileBackedTaskManager.loadFromFile(file);
-        //printAllTasks(fileBackedTaskManagerFromFile);
 
         HttpTaskServer taskServer = new HttpTaskServer(fileBackedTaskManager);
 
