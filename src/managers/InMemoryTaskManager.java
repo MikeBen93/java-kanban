@@ -59,8 +59,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(int id) {
-        historyManager.add(tasks.get(id));
-        return tasks.get(id);
+        Task task = tasks.get(id);
+
+        if (task == null)
+            throw new NotFoundException(LocalDateTime.now() + " Задача с id=" + id + " не найдена");
+
+        historyManager.add(task);
+        return task;
     }
 
     @Override
@@ -93,8 +98,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpic(int id) {
-        historyManager.add(epics.get(id));
-        return epics.get(id);
+        Epic epic = epics.get(id);
+
+        if (epic == null)
+            throw new NotFoundException(LocalDateTime.now() + " Эпик с id=" + id + " не найдена");
+
+        historyManager.add(epic);
+        return epic;
     }
 
     @Override
@@ -157,8 +167,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask getSubtask(int id) {
-        historyManager.add(subtasks.get(id));
-        return subtasks.get(id);
+        Subtask subtask = subtasks.get(id);
+
+        if (subtask == null)
+            throw new NotFoundException(LocalDateTime.now() + " Сабтаска с id=" + id + " не найдена");
+
+        historyManager.add(subtask);
+        return subtask;
     }
 
     @Override
@@ -217,7 +232,10 @@ public class InMemoryTaskManager implements TaskManager {
 
         epic.setStartTime(earliestStartTime);
         epic.setDuration(duraionsSum);
-        epic.setEndTime(earliestStartTime.plus(duraionsSum));
+        if (earliestStartTime == null)
+            epic.setEndTime(null);
+        else
+            epic.setEndTime(earliestStartTime.plus(duraionsSum));
     }
 
     @Override

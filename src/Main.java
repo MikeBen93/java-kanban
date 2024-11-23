@@ -1,3 +1,4 @@
+import api.HttpTaskServer;
 import managers.*;
 import tasks.*;
 
@@ -13,8 +14,14 @@ public class Main {
         addTasks(fileBackedTaskManager);
         updateTasks(fileBackedTaskManager);
         printAllTasks(fileBackedTaskManager);
-        TaskManager fileBackedTaskManagerFromFile = FileBackedTaskManager.loadFromFile(file);
-        printAllTasks(fileBackedTaskManagerFromFile);
+
+        HttpTaskServer taskServer = new HttpTaskServer(fileBackedTaskManager);
+
+        try {
+            taskServer.start();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
